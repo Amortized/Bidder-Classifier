@@ -1,0 +1,16 @@
+train = pd.read_csv("train.csv")
+bids = pd.read_csv("bids.csv")
+train_bids = pd.merge(train, bids, how='outer', on='bidder_id')
+train_bids[['outcome','bidder_id']].groupby(['outcome','bidder_id']).size().order(ascending=False)
+train_bids[['device','bidder_id']].groupby(['bidder_id', 'device']).size().order(ascending=False)
+m=train_bids.loc[train_bids['bidder_id'] == 'd6517684989560cbb0da1fb2f5bbba9b9y2st']
+m['country'].value_counts()
+
+m = train_bids[['auction','bidder_id']].groupby('auction')
+hash = dict()
+for name,group in m:
+  hash[name] = len(np.unique(group))
+
+  
+  
+groupby(['bidder_id', 'device']).size().order(ascending=False)
