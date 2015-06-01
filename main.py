@@ -5,6 +5,8 @@ import warnings;
 import math;
 import model;
 
+
+
 def read(train_file, test_file, bids_file):
 	train = pd.read_csv(train_file);
 	test  = pd.read_csv(test_file);
@@ -50,7 +52,43 @@ def getStats(grouped):
 
 def computeFeatures(data_bids):
 	#Convert into a matrix
-	data_bids = data_bids.groupby('bidder_id')
+	data_bids = data_bids.groupby('bidder_id');
+
+	feature_names = ["no_of_distinct_auctions", "min_bids_in_an_auction", \
+					 "max_bids_in_an_auction", "avg_bids_in_an_auction", \
+				  	 "median_bids_in_an_auction", "std_bids_in_an_auction", \
+				 	 "no_auctions_with_single_bid", "per_auctions_with_single_bid", \
+				 	 "no_of_distinct_devices", "min_bids_from_device", \
+					 "max_bids_from_device", "avg_bids_from_device", \
+					 "median_bids_from_device", "std_bids_from_device", \
+					 "no_devices_with_single_bid", "per_devices_with_single_bid", \
+					 "no_of_distinct_merchandize", "min_bids_for_merchandize", \
+					 "max_bids_for_merchandize", "avg_bids_for_merchandize", \
+					 "med_bids_for_merchandize", "std_bids_for_merchandize", \
+					 "no_merch_with_single_bid", "per_merch_with_single_bid", \
+				 	 "no_of_distinct_countries", "min_bids_from_countries", \
+					 "max_bids_from_countries", "avg_bids_from_countries", \
+					 "med_bids_from_countries", "std_bids_from_countries", \
+					 "no_countries_with_single_bid", "per_countries_with_single_bid", \
+					 "no_of_distinct_ips", "min_bids_from_ip", \
+					 "max_bids_from_ip", "avg_bids_from_ip", \
+					 "med_bids_from_ip", "std_bids_from_ip", \
+					 "no_ip_with_single_bid", "per_ip_with_single_bid", \
+					 "no_of_distinct_urls", "min_bids_from_url", \
+					 "max_bids_from_url", "avg_bids_from_url", \
+					 "med_bids_from_url", "std_bids_from_url", \
+					 "no_url_with_single_bid", "per_url_with_single_bid", \
+					 "min_diff_devices_used_in_auction", "max_diff_devices_used_in_auction", \
+					 "med_diff_devices_used_in_auction", \
+					 "min_diff_countries_used_in_auction", "max_diff_countries_used_in_auction", \
+					 "med_diff_countries_used_in_auction",\
+					 "min_diff_ip_used_in_auction","max_diff_ip_used_in_auction",\
+					 "med_diff_ip_used_in_auction",\
+					 "per_bids_at_distinct_unit_of_time", "bids_at_distinct_unit_of_time",\
+					 "max_bids_at_same_unit_of_time","med_bids_at_same_unit_of_time",\
+					 "avg_diff_in_time_between_bids","min_diff_in_time_between_bids",\
+					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids"];
+
 
 	bidder_features  = dict();
 
@@ -217,7 +255,7 @@ def computeFeatures(data_bids):
 								 max_diff_in_time_between_bids,med_diff_in_time_between_bids];
 
  
-	return bidder_features;
+	return bidder_features, feature_names;
 
 
 if __name__ == '__main__':
@@ -225,7 +263,7 @@ if __name__ == '__main__':
 	label_train, train_bids, test_bids, test_bidders_ids_without_bids = read("./data/train.csv", "./data/test.csv", "./data/bids.csv");
 
 	print("Training Set Features");
-	train_bidder_features = computeFeatures(train_bids);
+	train_bidder_features,feature_names = computeFeatures(train_bids);
 	del train_bids;
 
 	train_X = [];
@@ -234,12 +272,12 @@ if __name__ == '__main__':
 		train_X.append(train_bidder_features[key]);
 		train_Y.append(label_train[key]);
 
-	best_model, imputer = model.train(train_X, train_Y);
+	best_model, imputer = model.train(train_X, train_Y,feature_names);
 
 	del train_bidder_features;
 
 	print("Test Set Features");
-	test_bidder_features = computeFeatures(test_bids);
+	test_bidder_features,feature_names = computeFeatures(test_bids);
 	del test_bids;
 
 	test_X   = [];

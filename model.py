@@ -27,13 +27,14 @@ import copy
 
 def generateParams():
     # Set the parameters by cross-validation
-    paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [6],  'colsample_bytree' : [0.95], 'subsample' : [0.95], 'gamma' : [0], 'max_depth' : [5]};
+    #paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [3,4,5,6],  'colsample_bytree' : [1.0,0.90,0.95], 'subsample' : [1.0,0.95,0.90], 'gamma' : [0,1,2,4], 'max_depth' : [4,5,6,7], 'max_delta_step' : [0,2]};
+    paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [4],  'colsample_bytree' : [0.95], 'subsample' : [0.95], 'gamma' : [0], 'max_depth' : [4], 'max_delta_step' : [0]};
 
     paramaters_search  = list(ParameterGrid(paramaters_grid));
 
     parameters_to_try  = [];
     for ps in paramaters_search:
-        params           = {'eval_metric' : 'auc', 'objective' : 'binary:logistic', 'nthread' : 4};
+        params           = {'eval_metric' : 'auc', 'objective' : 'binary:logistic', 'nthread' : 8};
         for param in ps.keys():
             params[str(param)] = ps[param];
         parameters_to_try.append(copy.copy(params));
@@ -42,7 +43,7 @@ def generateParams():
 
 
 
-def train(train_X, train_Y):
+def train(train_X, train_Y, feature_names):
     imp     = Imputer(missing_values='NaN', strategy='median', axis=0);
     imp.fit(train_X);
 
@@ -59,7 +60,7 @@ def train(train_X, train_Y):
 
     for i in range(0, len(parameters_to_try)):
         param     = parameters_to_try[i]
-        num_round = 3000
+        num_round = 1000
 
         bst_cv    = xgb.cv(param, dtrain, num_round, nfold=20, metrics={'auc'}, show_stdv=False, seed=0)
         
@@ -83,6 +84,14 @@ def train(train_X, train_Y):
 
     bst = xgb.train(best_params, dtrain, overall_best_nrounds);
     print("\n\n Overall Best AUC : " + str(overall_best_auc) + " for Params " + str(best_params) + " occurs at " + str(best_iteration));
+    feature_imp = bst.get_fscore();
+
+    print("Feature Importance ... ");
+
+    for w in sorted(feature_imp, key=feature_imp.get, reverse=True):
+        print( str(feature_names[int(w.replace("f",""))]) + " : "  + str(feature_imp[w]) );
+
+    
 
     return bst, imp;
 
