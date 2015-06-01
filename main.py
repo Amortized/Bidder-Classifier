@@ -3,6 +3,7 @@ import sys;
 import numpy as np;
 import warnings;
 import math;
+import model;
 
 def read(train_file, test_file, bids_file):
 	train = pd.read_csv(train_file);
@@ -15,10 +16,13 @@ def read(train_file, test_file, bids_file):
 	test_bids  = pd.merge(test, bids, on='bidder_id', how='inner');
 	test_bids.drop(["payment_account", "address"],inplace=True,axis=1);
 
+	test_bidders_without_bids      = pd.merge(test, bids, on='bidder_id', how='left');
+	test_bidders_ids_without_bids  = test_bidders_without_bids[test_bidders_without_bids.bid_id.isnull()]['bidder_id'].values 
+
 	#Prepare a dict
 	label_train = dict(zip(list(train.bidder_id), list(train.outcome) ) );
 
-	return label_train, train_bids, test_bids;
+	return label_train, train_bids, test_bids, test_bidders_ids_without_bids;
 
 def getStats(grouped):
 	try :
@@ -218,10 +222,31 @@ def computeFeatures(data_bids):
 
 if __name__ == '__main__':
 	warnings.filterwarnings("ignore");
-	label_train, train_bids, test_bids = read("./data/train.csv", "./data/test.csv", "./data/bids.csv");
+	label_train, train_bids, test_bids, test_bidders_ids_without_bids = read("./data/train.csv", "./data/test.csv", "./data/bids.csv");
 
 	print("Training Set Features");
 	train_bidder_features = computeFeatures(train_bids);
 	del train_bids;
 
-	print(train_bidder_features)
+	train_X = [];
+	train_Y = [];
+	for key in train_bidder_features.keys():
+		train_X.append(train_bidder_features[key]);
+		train_Y.append(label_train[key]);
+
+	best_model, imputer = model.train(train_X, train_Y);
+
+	del train_bidder_features;
+
+	print("Test Set Features");
+	test_bidder_features = computeFeatures(test_bids);
+	del test_bids;
+
+	test_X   = [];
+	test_ids = [];
+	for key in test_bidder_features.keys():
+		test_ids.append(key);
+		test_X.append(test_bidder_features[key]);
+
+	model.predict_and_write(best_model, test_X, test_ids, test_bidders_ids_without_bids, imputer);	
+
