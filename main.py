@@ -89,6 +89,15 @@ def computeFeatures(data_bids):
 					 "avg_diff_in_time_between_bids","min_diff_in_time_between_bids",\
 					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids"];
 
+	feature_black_list = ["no_of_distinct_urls", "max_bids_in_an_auction", \
+						  "max_diff_ip_used_in_auction", "no_of_distinct_auctions", \
+						  "med_diff_ip_used_in_auction", "bids_at_distinct_unit_of_time", \
+						  "no_countries_with_single_bid", "max_bids_for_merchandize", \
+						  "no_of_distinct_countries", "no_of_distinct_devices", \
+						  "median_bids_from_device", "no_of_distinct_ips", \
+						  "med_diff_devices_used_in_auction", "median_bids_in_an_auction",\
+						  "min_bids_from_url"];
+
 
 	bidder_features  = dict();
 
@@ -254,7 +263,10 @@ def computeFeatures(data_bids):
 								 avg_diff_in_time_between_bids,min_diff_in_time_between_bids,\
 								 max_diff_in_time_between_bids,med_diff_in_time_between_bids];
 
- 
+		#Use this to remove blacklisted features						 
+		#bidder_features[name] = [bidder_features[name][i] for i in range(0, len(feature_names)) if feature_names[i] not in feature_black_list];
+								 
+
 	return bidder_features, feature_names;
 
 
