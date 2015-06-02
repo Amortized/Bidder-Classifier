@@ -27,8 +27,8 @@ import copy
 
 def generateParams():
     # Set the parameters by cross-validation
-    #paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [3,4,5,6],  'colsample_bytree' : [1.0,0.90,0.95], 'subsample' : [1.0,0.95,0.90], 'gamma' : [0,1,2,4], 'max_depth' : [4,5,6,7], 'max_delta_step' : [0,2]};
-    paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [4],  'colsample_bytree' : [0.95], 'subsample' : [0.95], 'gamma' : [0], 'max_depth' : [4], 'max_delta_step' : [0]};
+    #paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [3,4,5,6],  'colsample_bytree' : [1.0,0.90,0.95,0.85], 'subsample' : [1.0,0.95,0.90,0.85], 'gamma' : [0,1,2,4], 'max_depth' : [4,5,6,7], 'max_delta_step' : [0,2,5]};
+    paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [1],  'colsample_bytree' : [0.80], 'subsample' : [0.80], 'gamma' : [0], 'max_depth' : [4], 'max_delta_step' : [0]};
 
     paramaters_search  = list(ParameterGrid(paramaters_grid));
 
