@@ -14,3 +14,65 @@ for name,group in m:
   
   
 groupby(['bidder_id', 'device']).size().order(ascending=False)
+
+
+
+Feature Importance ... 
+avg_no_bidders_in_all_my_auctions : 666
+per_ip_with_single_bid : 559
+avg_my_per_bids_in_all_my_auctions : 484
+avg_bids_from_url : 372
+avg_bids_in_an_auction : 360
+std_bids_from_ip : 345
+std_bids_from_device : 317
+no_url_with_single_bid : 310
+no_devices_with_single_bid : 305
+max_diff_in_time_between_bids : 294
+no_auctions_with_single_bid : 281
+per_auctions_with_single_bid : 275
+per_url_with_single_bid : 267
+std_bids_from_url : 266
+avg_diff_in_time_between_bids : 265
+med_diff_in_time_between_bids : 251
+std_bids_in_an_auction : 245
+min_bids_for_merchandize : 233
+std_bids_from_countries : 224
+per_devices_with_single_bid : 215
+avg_bids_from_countries : 213
+avg_bids_from_device : 211
+per_countries_with_single_bid : 206
+med_bids_from_countries : 164
+avg_bids_from_ip : 149
+max_bids_from_ip : 141
+per_bids_at_distinct_unit_of_time : 132
+no_of_distinct_urls : 130
+max_bids_from_device : 129
+max_bids_in_an_auction : 123
+max_diff_devices_used_in_auction : 120
+max_bids_from_countries : 119
+min_diff_in_time_between_bids : 115
+no_ip_with_single_bid : 107
+max_bids_from_url : 99
+max_diff_countries_used_in_auction : 90
+no_of_distinct_auctions : 84
+no_countries_with_single_bid : 78
+max_diff_ip_used_in_auction : 71
+no_of_distinct_countries : 66
+no_of_distinct_devices : 59
+max_bids_for_merchandize : 59
+min_bids_from_url : 42
+median_bids_from_device : 41
+med_diff_ip_used_in_auction : 39
+med_diff_devices_used_in_auction : 34
+bids_at_distinct_unit_of_time : 34
+no_of_distinct_ips : 33
+med_bids_from_url : 30
+median_bids_in_an_auction : 29
+min_bids_from_device : 10
+med_bids_from_ip : 9
+avg_bids_for_merchandize : 7
+min_bids_from_countries : 5
+max_bids_at_same_unit_of_time : 5
+min_bids_from_ip : 4
+min_bids_in_an_auction : 3
+
