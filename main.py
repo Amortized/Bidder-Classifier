@@ -87,7 +87,8 @@ def computeFeatures(data_bids):
 					 "per_bids_at_distinct_unit_of_time", "bids_at_distinct_unit_of_time",\
 					 "max_bids_at_same_unit_of_time","med_bids_at_same_unit_of_time",\
 					 "avg_diff_in_time_between_bids","min_diff_in_time_between_bids",\
-					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids"];
+					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids",
+					 "country_with_max_bids_is_risky"];
 
 	feature_black_list = ["no_of_distinct_urls", "max_bids_in_an_auction", \
 						  "max_diff_ip_used_in_auction", "no_of_distinct_auctions", \
@@ -100,6 +101,7 @@ def computeFeatures(data_bids):
 
 
 	bidder_features  = dict();
+
 
 	for name,group in data_bids:
 		auctions  			    = group['auction'].value_counts(ascending=False,sort=True,dropna=True);
@@ -227,6 +229,16 @@ def computeFeatures(data_bids):
 			med_diff_in_time_between_bids      = "NaN";
 
 
+		try:
+			country_with_max_bids_is_risky			       = countries.argmax();
+			if country_with_max_bids_is_risky in ["mo", "jp", "kr", "fo", "je", "mp", "tm", "mn", "bs", "dm", "do", "ag", "pf", "de", "ps", "at", "sr", "ca", "au", "tw"]:
+				country_with_max_bids_is_risky = 1;
+			else:
+				country_with_max_bids_is_risky = 0;
+		except :
+			country_with_max_bids_is_risky	  = 0;
+
+			
 		#Add the features
 		bidder_features[name] = [no_of_distinct_auctions, min_bids_in_an_auction, \
 								 max_bids_in_an_auction, avg_bids_in_an_auction, \
@@ -261,12 +273,12 @@ def computeFeatures(data_bids):
 								 per_bids_at_distinct_unit_of_time, bids_at_distinct_unit_of_time,\
 								 max_bids_at_same_unit_of_time,med_bids_at_same_unit_of_time,\
 								 avg_diff_in_time_between_bids,min_diff_in_time_between_bids,\
-								 max_diff_in_time_between_bids,med_diff_in_time_between_bids];
+								 max_diff_in_time_between_bids,med_diff_in_time_between_bids,
+								 country_with_max_bids_is_risky];
 
 		#Use this to remove blacklisted features						 
 		#bidder_features[name] = [bidder_features[name][i] for i in range(0, len(feature_names)) if feature_names[i] not in feature_black_list];
 								 
-
 	return bidder_features, feature_names;
 
 
@@ -284,7 +296,7 @@ if __name__ == '__main__':
 		train_X.append(train_bidder_features[key]);
 		train_Y.append(label_train[key]);
 
-	best_model, imputer = model.train(train_X, train_Y,feature_names);
+	best_model, imputer, one_hot_encoder = model.train(train_X, train_Y,feature_names);
 
 	del train_bidder_features;
 
@@ -298,5 +310,5 @@ if __name__ == '__main__':
 		test_ids.append(key);
 		test_X.append(test_bidder_features[key]);
 
-	model.predict_and_write(best_model, test_X, test_ids, test_bidders_ids_without_bids, imputer);	
+	model.predict_and_write(best_model, test_X, test_ids, test_bidders_ids_without_bids, imputer, one_hot_encoder);	
 

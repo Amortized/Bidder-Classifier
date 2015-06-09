@@ -24,11 +24,12 @@ from random import randint
 from random import shuffle
 import math
 import copy
+from sklearn.preprocessing import OneHotEncoder;
 
 def generateParams():
     # Set the parameters by cross-validation
-    #paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [3,4,5,6],  'colsample_bytree' : [1.0,0.90,0.95,0.85], 'subsample' : [1.0,0.95,0.90,0.85], 'gamma' : [0,1,2,4], 'max_depth' : [4,5,6,7], 'max_delta_step' : [0,2,5]};
-    paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [1],  'colsample_bytree' : [0.80], 'subsample' : [0.80], 'gamma' : [0], 'max_depth' : [4], 'max_delta_step' : [0]};
+    #paramaters_grid    = {'eta': [0.01], 'min_child_weight' : [1,2,3],  'colsample_bytree' : [0.95,0.85], 'subsample' : [1.0,0.95,0.90,0.85], 'gamma' : [0,1,2,4], 'max_depth' : [4,5,6,7], 'max_delta_step' : [0,2,5]};
+    paramaters_grid    = {'eta': [0.05], 'min_child_weight' : [1],  'colsample_bytree' : [0.7], 'subsample' : [0.4], 'gamma' : [0.15], 'max_depth' : [5]};
 
     paramaters_search  = list(ParameterGrid(paramaters_grid));
 
@@ -45,9 +46,19 @@ def generateParams():
 
 def train(train_X, train_Y, feature_names):
     imp     = Imputer(missing_values='NaN', strategy='median', axis=0);
-    imp.fit(train_X);
+    enc     = OneHotEncoder(categorical_features=np.array([65,66]), sparse=False, n_values=80);    
 
+
+    imp.fit(train_X);
     train_X = imp.transform(train_X);
+
+    """
+    enc.fit(train_X);
+    train_X = enc.transform(train_X);
+    """
+
+    print("No of features :  " + str(len(train_X[0])));
+
     train_Y = np.array(train_Y);
 
     dtrain      = xgb.DMatrix( train_X, label=train_Y);
@@ -60,7 +71,7 @@ def train(train_X, train_Y, feature_names):
 
     for i in range(0, len(parameters_to_try)):
         param     = parameters_to_try[i]
-        num_round = 1000
+        num_round = 2000
 
         bst_cv    = xgb.cv(param, dtrain, num_round, nfold=20, metrics={'auc'}, show_stdv=False, seed=0)
         
@@ -93,11 +104,12 @@ def train(train_X, train_Y, feature_names):
 
     
 
-    return bst, imp;
+    return bst, imp, enc;
 
-def predict_and_write(best_model, test_X, test_ids, test_bidders_ids_without_bids, imp):
+def predict_and_write(best_model, test_X, test_ids, test_bidders_ids_without_bids, imp, one_hot_encoder):
 
     test_X = imp.transform(test_X);
+    #test_X = one_hot_encoder.transform(test_X);
     test_X = xgb.DMatrix(test_X);
     Y_hat  = best_model.predict( test_X );
 
