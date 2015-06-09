@@ -51,6 +51,13 @@ def getStats(grouped):
 
 
 def computeFeatures(data_bids):
+	#Compute auction stats
+	auction_group = data_bids.groupby('auction');
+	auction_stats = dict();
+	for name,group in auction_group:
+		auction_stats[name] = group['bidder_id'].value_counts(ascending=False,sort=True,dropna=True).to_dict();
+
+
 	#Convert into a matrix
 	data_bids = data_bids.groupby('bidder_id');
 
@@ -87,8 +94,13 @@ def computeFeatures(data_bids):
 					 "per_bids_at_distinct_unit_of_time", "bids_at_distinct_unit_of_time",\
 					 "max_bids_at_same_unit_of_time","med_bids_at_same_unit_of_time",\
 					 "avg_diff_in_time_between_bids","min_diff_in_time_between_bids",\
+<<<<<<< HEAD
 					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids",
 					 "country_with_max_bids_is_risky"];
+=======
+					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids",\
+					 "avg_no_bidders_in_all_my_auctions","avg_my_per_bids_in_all_my_auctions"];
+>>>>>>> a686d370514b2d38b099ee0b045944b811b15714
 
 	feature_black_list = ["no_of_distinct_urls", "max_bids_in_an_auction", \
 						  "max_diff_ip_used_in_auction", "no_of_distinct_auctions", \
@@ -229,6 +241,7 @@ def computeFeatures(data_bids):
 			med_diff_in_time_between_bids      = "NaN";
 
 
+<<<<<<< HEAD
 		try:
 			country_with_max_bids_is_risky			       = countries.argmax();
 			if country_with_max_bids_is_risky in ["mo", "jp", "kr", "fo", "je", "mp", "tm", "mn", "bs", "dm", "do", "ag", "pf", "de", "ps", "at", "sr", "ca", "au", "tw"]:
@@ -239,6 +252,27 @@ def computeFeatures(data_bids):
 			country_with_max_bids_is_risky	  = 0;
 
 			
+=======
+		other_bidders_in_auctions = [];	
+		#Check stats in various auctions
+		for my_auction in auctions.keys():
+			if my_auction in auction_stats and name in auction_stats[my_auction].keys():
+				no_other_bidders       = len(auction_stats[my_auction].keys()) - 1;
+				if no_other_bidders < 0:
+					no_other_bidders = 0;
+				my_per_bids_in_auction = auction_stats[my_auction][name] / float(sum(auction_stats[my_auction].values())); 
+				other_bidders_in_auctions.append( (no_other_bidders,  my_per_bids_in_auction) )
+
+		try :
+			avg_no_bidders_in_all_my_auctions  = np.mean([x[0] for x in other_bidders_in_auctions]);
+			avg_my_per_bids_in_all_my_auctions = np.mean([x[1] for x in other_bidders_in_auctions]);
+		except :
+			avg_no_bidders_in_all_my_auctions  = "NaN";
+			avg_my_per_bids_in_all_my_auctions = "NaN";
+			
+		
+
+>>>>>>> a686d370514b2d38b099ee0b045944b811b15714
 		#Add the features
 		bidder_features[name] = [no_of_distinct_auctions, min_bids_in_an_auction, \
 								 max_bids_in_an_auction, avg_bids_in_an_auction, \
@@ -273,8 +307,13 @@ def computeFeatures(data_bids):
 								 per_bids_at_distinct_unit_of_time, bids_at_distinct_unit_of_time,\
 								 max_bids_at_same_unit_of_time,med_bids_at_same_unit_of_time,\
 								 avg_diff_in_time_between_bids,min_diff_in_time_between_bids,\
+<<<<<<< HEAD
 								 max_diff_in_time_between_bids,med_diff_in_time_between_bids,
 								 country_with_max_bids_is_risky];
+=======
+								 max_diff_in_time_between_bids,med_diff_in_time_between_bids,\
+								 avg_no_bidders_in_all_my_auctions,avg_my_per_bids_in_all_my_auctions];
+>>>>>>> a686d370514b2d38b099ee0b045944b811b15714
 
 		#Use this to remove blacklisted features						 
 		#bidder_features[name] = [bidder_features[name][i] for i in range(0, len(feature_names)) if feature_names[i] not in feature_black_list];
