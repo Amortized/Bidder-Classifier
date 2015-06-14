@@ -41,13 +41,13 @@ def getStats(grouped):
 	except :
 
 		return  "NaN",\
-				"NaN",\
-				"NaN",\
-				"NaN",\
-				"NaN",\
-				"NaN",\
-				"NaN",\
-				"NaN";
+			"NaN",\
+			"NaN",\
+			"NaN",\
+			"NaN",\
+			"NaN",\
+			"NaN",\
+			"NaN";
 
 
 def computeFeatures(data_bids):
@@ -94,13 +94,8 @@ def computeFeatures(data_bids):
 					 "per_bids_at_distinct_unit_of_time", "bids_at_distinct_unit_of_time",\
 					 "max_bids_at_same_unit_of_time","med_bids_at_same_unit_of_time",\
 					 "avg_diff_in_time_between_bids","min_diff_in_time_between_bids",\
-<<<<<<< HEAD
-					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids",
-					 "country_with_max_bids_is_risky"];
-=======
 					 "max_diff_in_time_between_bids","med_diff_in_time_between_bids",\
 					 "avg_no_bidders_in_all_my_auctions","avg_my_per_bids_in_all_my_auctions"];
->>>>>>> a686d370514b2d38b099ee0b045944b811b15714
 
 	feature_black_list = ["no_of_distinct_urls", "max_bids_in_an_auction", \
 						  "max_diff_ip_used_in_auction", "no_of_distinct_auctions", \
@@ -241,18 +236,6 @@ def computeFeatures(data_bids):
 			med_diff_in_time_between_bids      = "NaN";
 
 
-<<<<<<< HEAD
-		try:
-			country_with_max_bids_is_risky			       = countries.argmax();
-			if country_with_max_bids_is_risky in ["mo", "jp", "kr", "fo", "je", "mp", "tm", "mn", "bs", "dm", "do", "ag", "pf", "de", "ps", "at", "sr", "ca", "au", "tw"]:
-				country_with_max_bids_is_risky = 1;
-			else:
-				country_with_max_bids_is_risky = 0;
-		except :
-			country_with_max_bids_is_risky	  = 0;
-
-			
-=======
 		other_bidders_in_auctions = [];	
 		#Check stats in various auctions
 		for my_auction in auctions.keys():
@@ -272,7 +255,6 @@ def computeFeatures(data_bids):
 			
 		
 
->>>>>>> a686d370514b2d38b099ee0b045944b811b15714
 		#Add the features
 		bidder_features[name] = [no_of_distinct_auctions, min_bids_in_an_auction, \
 								 max_bids_in_an_auction, avg_bids_in_an_auction, \
@@ -307,13 +289,8 @@ def computeFeatures(data_bids):
 								 per_bids_at_distinct_unit_of_time, bids_at_distinct_unit_of_time,\
 								 max_bids_at_same_unit_of_time,med_bids_at_same_unit_of_time,\
 								 avg_diff_in_time_between_bids,min_diff_in_time_between_bids,\
-<<<<<<< HEAD
-								 max_diff_in_time_between_bids,med_diff_in_time_between_bids,
-								 country_with_max_bids_is_risky];
-=======
 								 max_diff_in_time_between_bids,med_diff_in_time_between_bids,\
 								 avg_no_bidders_in_all_my_auctions,avg_my_per_bids_in_all_my_auctions];
->>>>>>> a686d370514b2d38b099ee0b045944b811b15714
 
 		#Use this to remove blacklisted features						 
 		#bidder_features[name] = [bidder_features[name][i] for i in range(0, len(feature_names)) if feature_names[i] not in feature_black_list];
